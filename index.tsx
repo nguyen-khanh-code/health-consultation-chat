@@ -19,13 +19,46 @@ export class HealthChatApp extends LitElement {
   static override styles = css`
     :host {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       height: 100%;
       width: 100%;
-      margin: 0;
       box-sizing: border-box;
       font-family: 'Google Sans', sans-serif;
-      background-color: #f0f4f8;
+    }
+
+    .app-container {
+      width: 100%;
+      height: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background-color: #00796B; /* Darker Teal */
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    header svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
     }
 
     .chat-container {
@@ -34,45 +67,82 @@ export class HealthChatApp extends LitElement {
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
+    .message-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      max-width: 85%;
+    }
+
+    .user-wrapper {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .model-wrapper {
+      align-self: flex-start;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .avatar svg {
+      width: 24px;
+      height: 24px;
+      color: #5f6368;
+    }
+
+    .user-wrapper .avatar {
+      background-color: #00796B;
+    }
+    
+    .user-wrapper .avatar svg {
+       color: #ffffff;
+    }
+
+
     .message {
-      padding: 10px 15px;
-      border-radius: 18px;
-      max-width: 80%;
-      width: fit-content;
+      padding: 12px 16px;
+      border-radius: 20px;
       word-wrap: break-word;
       line-height: 1.5;
       white-space: pre-wrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
     .user-message {
-      background-color: #007bff;
+      background-color: #00796B; /* Darker Teal */
       color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: 5px;
     }
 
     .model-message {
-      background-color: #ffffff;
-      color: #333;
-      align-self: flex-start;
-      border: 1px solid #e0e0e0;
-      border-bottom-left-radius: 4px;
+      background-color: #F1F3F4; /* Light Gray */
+      color: #202124;
+      border-bottom-left-radius: 5px;
     }
 
     .loading-indicator {
-      align-self: flex-start;
       display: flex;
-      gap: 8px;
+      gap: 5px;
       align-items: center;
-      padding: 10px 15px;
+      padding: 12px 16px;
     }
     .loading-dot {
       width: 8px;
       height: 8px;
-      background-color: #999;
+      background-color: #00796B;
       border-radius: 50%;
       animation: bounce 1.4s infinite ease-in-out both;
     }
@@ -86,18 +156,18 @@ export class HealthChatApp extends LitElement {
 
     .form-container {
       display: flex;
-      padding: 10px 20px;
-      background-color: #ffffff;
-      border-top: 1px solid #dde3ea;
-      gap: 10px;
+      padding: 12px 20px;
+      background-color: #F1F3F4;
+      gap: 12px;
       align-items: center;
+      border-top: 1px solid #E0E0E0;
     }
 
     textarea {
       flex-grow: 1;
-      padding: 12px;
+      padding: 14px 20px;
       border-radius: 24px;
-      border: 1px solid #ccc;
+      border: 1px solid #DCDCDC;
       resize: none;
       font-family: inherit;
       font-size: 16px;
@@ -105,18 +175,19 @@ export class HealthChatApp extends LitElement {
       max-height: 120px;
       transition: height 0.2s;
       scrollbar-width: none;
+      background-color: #FFFFFF;
     }
      textarea::-webkit-scrollbar {
         display: none;
     }
     textarea:focus {
       outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      border-color: #00796B;
+      box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.2);
     }
 
     button {
-      background-color: #007bff;
+      background-color: #00796B;
       color: white;
       border: none;
       border-radius: 50%;
@@ -131,17 +202,25 @@ export class HealthChatApp extends LitElement {
     }
 
     button:hover:not(:disabled) {
-      background-color: #0056b3;
+      background-color: #004D40;
     }
 
     button:disabled {
-      background-color: #a0a0a0;
+      background-color: #BDBDBD;
       cursor: not-allowed;
     }
 
-    svg {
+    button svg {
       width: 24px;
       height: 24px;
+    }
+
+    footer {
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #5f6368;
+      background-color: #F1F3F4;
     }
   `;
 
@@ -232,47 +311,85 @@ export class HealthChatApp extends LitElement {
       this.isLoading = false;
     }
   }
+  
+  private renderMessage(msg: Message) {
+      const userAvatar = html`
+        <div class="avatar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+      `;
+      const modelAvatar = html`
+        <div class="avatar">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+        </div>
+      `;
+
+      if (msg.role === 'loading') {
+        return html`
+          <div class="message-wrapper model-wrapper">
+             ${modelAvatar}
+            <div class="message model-message loading-indicator">
+              <div class="loading-dot"></div>
+              <div class="loading-dot"></div>
+              <div class="loading-dot"></div>
+            </div>
+          </div>
+        `;
+      }
+      
+      const wrapperClasses = {
+        'message-wrapper': true,
+        'user-wrapper': msg.role === 'user',
+        'model-wrapper': msg.role === 'model',
+      };
+
+      const messageClasses = {
+        message: true,
+        'user-message': msg.role === 'user',
+        'model-message': msg.role === 'model',
+      };
+      
+      return html`
+        <div class=${classMap(wrapperClasses)}>
+          ${msg.role === 'user' ? userAvatar : modelAvatar}
+          <div class=${classMap(messageClasses)}>${msg.text}</div>
+        </div>
+      `;
+  }
 
   override render() {
     return html`
-      <div class="chat-container">
-        ${this.messages.map(msg => {
-          if (msg.role === 'loading') {
-            return html`
-              <div class="loading-indicator">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-              </div>
-            `;
-          }
-          const classes = {
-            message: true,
-            'user-message': msg.role === 'user',
-            'model-message': msg.role === 'model',
-          };
-          return html`<div class=${classMap(classes)}>${msg.text}</div>`;
-        })}
+      <div class="app-container">
+        <header>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+          <h2>Tư Vấn Sức Khỏe AI</h2>
+        </header>
+        <div class="chat-container">
+          ${this.messages.map(msg => this.renderMessage(msg))}
+        </div>
+        <form class="form-container" @submit=${this.handleSendMessage}>
+          <textarea
+            name="prompt"
+            placeholder="Nhập câu hỏi của bạn..."
+            .disabled=${this.isLoading}
+            @input=${this.handleInput}
+            @keydown=${(e: KeyboardEvent) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                (e.target as HTMLElement).closest('form')?.requestSubmit();
+              }
+            }}
+          ></textarea>
+          <button type="submit" .disabled=${this.isLoading} aria-label="Gửi">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+        <footer>
+          Phát triển bởi Nguyễn Duy Khánh Đợt đào tạo thực tế Hợp tác giữa FPT Polytechnic và IMTA TECH, Cán bộ Hướng dẫn: Trần Tuấn Thành.
+        </footer>
       </div>
-      <form class="form-container" @submit=${this.handleSendMessage}>
-        <textarea
-          name="prompt"
-          placeholder="Nhập câu hỏi của bạn..."
-          .disabled=${this.isLoading}
-          @input=${this.handleInput}
-          @keydown=${(e: KeyboardEvent) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              (e.target as HTMLElement).closest('form')?.requestSubmit();
-            }
-          }}
-        ></textarea>
-        <button type="submit" .disabled=${this.isLoading} aria-label="Gửi">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-        </button>
-      </form>
     `;
   }
 }
